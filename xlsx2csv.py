@@ -200,6 +200,7 @@ class Xlsx2csv:
         try:
             self.ziphandle = zipfile.ZipFile(xlsxfile)
         except (zipfile.BadZipfile, IOError):
+
             raise InvalidXlsxFileException("Invalid xlsx file: " + str(xlsxfile))
 
         self.py3 = sys.version_info[0] == 3
@@ -1040,8 +1041,8 @@ def convert_recursive(path, sheetid, outfile, kwargs):
             print("Converting %s to %s" % (fullpath, outfilepath))
             try:
                 Xlsx2csv(fullpath, **kwargs).convert(outfilepath, sheetid)
-            except zipfile.BadZipfile:
-                raise InvalidXlsxFileException("File %s is not a zip file" % fullpath)
+            except (zipfile.BadZipfile, InvalidXlsxFileException):
+                continue
 
 
 def main():
